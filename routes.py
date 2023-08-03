@@ -2,17 +2,8 @@ from flask import Flask, render_template, request, redirect, url_for, session, f
 from flask_mysqldb import MySQL, MySQLdb
 from functools import wraps
 from werkzeug.utils import secure_filename
-import numpy as np
 from flask_cors import CORS
 import os
-import pickle
-import random
-import numpy as np
-import pickle
-import json
-from keras.models import load_model
-from nltk.stem import WordNetLemmatizer
-lemmatizer = WordNetLemmatizer()
 import re
 
 
@@ -277,41 +268,41 @@ def chatbotadmin():
     cur.close()
     return render_template('chatbotadmin.html', chatbotadmin = data)
 
-#menampilkan  form tambah data
-@app.route('/tambahChatbot', methods = ['POST'])
-def tambahdataChatbot():
-    cur = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+# #menampilkan  form tambah data
+# @app.route('/tambahChatbot', methods = ['POST'])
+# def tambahdataChatbot():
+#     cur = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
 
-    name_patterns = request.form['Patterns']
+#     name_patterns = request.form['Patterns']
     
-    name_patterns = name_patterns.split(",")
-    print(name_patterns)
-    desk_responses = request.form['Responses']
-    desk_responses = desk_responses.split(",")
-    print(desk_responses)
-    cur.execute("insert into chatbot (patterns,responses) values(%s,%s)",(str(name_patterns),str(desk_responses)))
-    mysql.connection.commit()
-    cur.close()
-    print( 'chatbot\intents.json')
-    with open('chatbot\intents.json', "r+") as f:
-        inten = json.loads(f.read())
-        import uuid,string
-        letters = string.ascii_lowercase
-        rando = ''.join(random.choice(letters) for i in range(4))
-        y = {"tag":str(rando),
-            "patterns": name_patterns,
-            "responses": desk_responses,
-            "context": [""]
-            }
-        inten['intents'].append(y)
+#     name_patterns = name_patterns.split(",")
+#     print(name_patterns)
+#     desk_responses = request.form['Responses']
+#     desk_responses = desk_responses.split(",")
+#     print(desk_responses)
+#     cur.execute("insert into chatbot (patterns,responses) values(%s,%s)",(str(name_patterns),str(desk_responses)))
+#     mysql.connection.commit()
+#     cur.close()
+#     print( 'chatbot\intents.json')
+#     with open('chatbot\intents.json', "r+") as f:
+#         inten = json.loads(f.read())
+#         import uuid,string
+#         letters = string.ascii_lowercase
+#         rando = ''.join(random.choice(letters) for i in range(4))
+#         y = {"tag":str(rando),
+#             "patterns": name_patterns,
+#             "responses": desk_responses,
+#             "context": [""]
+#             }
+#         inten['intents'].append(y)
         
-        with open('chatbot\intents.json', "w+") as k:
-            json.dump(inten,k)
+#         with open('chatbot\intents.json', "w+") as k:
+#             json.dump(inten,k)
         
-    from retraining import retraining
-    retraining()
+#     from retraining import retraining
+#     retraining()
 
-    return redirect('chatbotadmin')
+#     return redirect('chatbotadmin')
    
 
 @app.route('/tambahdatachatbot')
@@ -434,86 +425,86 @@ def root():
 
 
 
-model = load_model("chatbot\chatbot_model.h5")
-intents = json.loads(open("chatbot\intents.json").read())
-print(intents)
-words = pickle.load(open("chatbot\words.pkl", "rb"))
-classes = pickle.load(open("chatbot\classes.pkl", "rb"))
+# model = load_model("chatbot\chatbot_model.h5")
+# intents = json.loads(open("chatbot\intents.json").read())
+# print(intents)
+# words = pickle.load(open("chatbot\words.pkl", "rb"))
+# classes = pickle.load(open("chatbot\classes.pkl", "rb"))
 
-@app.route("/get", methods=["POST"])
-def chatbot_response():
-    msg = request.form["msg"]
-    print(msg)
-    if msg.startswith('my name is'):
-        name = msg[11:]
-        ints = predict_class(msg, model)
-        res1 = getResponse(ints, intents)
-        res =res1.replace("{n}",name)
-    elif msg.startswith('hi my name is'):
-        name = msg[14:]
-        ints = predict_class(msg, model)
-        res1 = getResponse(ints, intents)
-        res =res1.replace("{n}",name)
-    else:
-        print("jln")
-        ints = predict_class(msg, model)
-        print(ints)
-        res = getResponse(ints, intents)
-    return res
+# @app.route("/get", methods=["POST"])
+# def chatbot_response():
+#     msg = request.form["msg"]
+#     print(msg)
+#     if msg.startswith('my name is'):
+#         name = msg[11:]
+#         ints = predict_class(msg, model)
+#         res1 = getResponse(ints, intents)
+#         res =res1.replace("{n}",name)
+#     elif msg.startswith('hi my name is'):
+#         name = msg[14:]
+#         ints = predict_class(msg, model)
+#         res1 = getResponse(ints, intents)
+#         res =res1.replace("{n}",name)
+#     else:
+#         print("jln")
+#         ints = predict_class(msg, model)
+#         print(ints)
+#         res = getResponse(ints, intents)
+#     return res
 
-def clean_up_sentence(sentence):
-    import nltk
-    nltk.download('popular')
-    from nltk.stem import WordNetLemmatizer
-    lemmatizer = WordNetLemmatizer()
-    # tokenize the pattern - split words into array
-    sentence_words = nltk.word_tokenize(sentence)
-    # stem each word - create short form for word
-    sentence_words = [lemmatizer.lemmatize(word.lower()) for word in sentence_words]
-    print(sentence_words)
-    return sentence_words
+# def clean_up_sentence(sentence):
+#     import nltk
+#     nltk.download('popular')
+#     from nltk.stem import WordNetLemmatizer
+#     lemmatizer = WordNetLemmatizer()
+#     # tokenize the pattern - split words into array
+#     sentence_words = nltk.word_tokenize(sentence)
+#     # stem each word - create short form for word
+#     sentence_words = [lemmatizer.lemmatize(word.lower()) for word in sentence_words]
+#     print(sentence_words)
+#     return sentence_words
 
-def bow(sentence, words, show_details=True):
-    sentence_words = clean_up_sentence(sentence)
-    bag = [0] * len(words)
-    print(bag)
-    for s in sentence_words:
-        for i, w in enumerate(words):
-            if w == s:
-                bag[i] = 1
-                if show_details:
-                    print("found in bag: %s" % w)
-    return np.array(bag)
+# def bow(sentence, words, show_details=True):
+#     sentence_words = clean_up_sentence(sentence)
+#     bag = [0] * len(words)
+#     print(bag)
+#     for s in sentence_words:
+#         for i, w in enumerate(words):
+#             if w == s:
+#                 bag[i] = 1
+#                 if show_details:
+#                     print("found in bag: %s" % w)
+#     return np.array(bag)
 
-def predict_class(sentence, model):
-    p = bow(sentence, words, show_details=False)
-    print(p)
-    res = model.predict(np.array([p]))[0]
-    print(res)
-    ERROR_THRESHOLD = 0.25
-    results = [[i, r] for i, r in enumerate(res) if r > ERROR_THRESHOLD]
-    results.sort(key=lambda x: x[1], reverse=True)
-    return_list = []
-    if res == []:
-        return_list.append({"intent": "error", "probability": 0})
-    else:
-        for r in results:
-            return_list.append({"intent": classes[r[0]], "probability": str(r[1])})
-    print(return_list)
-    return return_list
+# def predict_class(sentence, model):
+#     p = bow(sentence, words, show_details=False)
+#     print(p)
+#     res = model.predict(np.array([p]))[0]
+#     print(res)
+#     ERROR_THRESHOLD = 0.25
+#     results = [[i, r] for i, r in enumerate(res) if r > ERROR_THRESHOLD]
+#     results.sort(key=lambda x: x[1], reverse=True)
+#     return_list = []
+#     if res == []:
+#         return_list.append({"intent": "error", "probability": 0})
+#     else:
+#         for r in results:
+#             return_list.append({"intent": classes[r[0]], "probability": str(r[1])})
+#     print(return_list)
+#     return return_list
 
-def getResponse(ints, intents_json):
-    tag = ints[0]["intent"]
-    list_of_intents = intents_json["intents"]
-    for i in list_of_intents:
-        print(tag)
-        print(i['tag'])
-        if i["tag"] == tag:
-            result = random.choice(i["responses"])
-            break
-        else:
-            result = "Maaf saya tidak bisa menjawab"
-    return result
+# def getResponse(ints, intents_json):
+#     tag = ints[0]["intent"]
+#     list_of_intents = intents_json["intents"]
+#     for i in list_of_intents:
+#         print(tag)
+#         print(i['tag'])
+#         if i["tag"] == tag:
+#             result = random.choice(i["responses"])
+#             break
+#         else:
+#             result = "Maaf saya tidak bisa menjawab"
+#     return result
 
 
 

@@ -1,9 +1,5 @@
 Flask
 Flask_Cors
 Flask_MySQLdb
-keras
-nltk
-numpy
-tensorflow_gpu
 Werkzeug
 gunicorn
