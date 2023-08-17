@@ -30,9 +30,10 @@
                 <table style="margin-top:20px;" class="table table-striped">
                     <thead class="thead-light">
                         <tr>
-                            <th width="25%">Id_Admin</th>
-                            <th width="25%">Patterns</th>
-                            <th width="25%">Responses</th>
+                            <th width="3%">Id_Admin</th>
+                            <th width="10%">Label</th>
+                            <th width="28%">Pertanyaan</th>
+                            <th width="45%">Jawaban</th>
                         </tr>
                         <a href="/tambahdatachatbot">
                             <button type="submit" class="btn btn-primary">Tambah Data</button>
@@ -42,6 +43,7 @@
                         {% for data in chatbotadmin %}
                         <tr>   
                             <td>{{data.id_admin}}</td>
+                            <td>{{data.Tag}}</td>
                             <td>{{data.patterns}}</td>
                             <td>{{data.responses}}</td> 
                             <!-- <td width="100">
@@ -52,6 +54,11 @@
                                         <i style="font-size:16px" class="fa fa-trash text-danger" aria-hidden="true"></i></a>
                                 </div>
                             </td> -->
+                            <td width="100">
+                                <div class="d-flex" style="justify-content: space-between">
+                                    
+                                    <a href="/hapusChatbot/{{data.id}}">
+                                        <i style="font-size:16px" class="fa fa-trash text-danger" aria-hidden="true"></i></a>
                         </tr>
                        {% endfor %}
                     </tbody>

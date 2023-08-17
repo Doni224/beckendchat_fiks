@@ -135,7 +135,6 @@ def updateKaryawan(id):
 @app.route('/hapusKaryawan/<string:id>', methods = ['POST','GET'])
 def hapusKaryawan(id):
     cur = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
-  
     cur.execute('DELETE FROM karyawan WHERE id = {0}'.format(id))
     mysql.connection.commit()
     flash('Karyawan Berhasil Dihapus!')
